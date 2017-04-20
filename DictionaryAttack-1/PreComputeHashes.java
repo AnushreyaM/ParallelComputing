@@ -6,10 +6,11 @@ import javax.xml.bind.DatatypeConverter;
 
 class PreComputeHashes {
 
-
+    //to store encrypted version of every word in the dictionary
     public static Map<String, String> hashes_dict = new HashMap<String, String>();
 
 
+	//function used in original code for encryption
 	public static String bytesToHex(byte[] b) {
 				 char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7',
 					                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -35,10 +36,12 @@ class PreComputeHashes {
 			String sha1 = bytesToHex(md.digest());
 
 				return sha1;
-			}
 	
+	
+	}
+	
+	//populate hashes_dict to store hashed values of all words in the dictionary
 	public static void populate() throws Exception{
-	
 	
 	//Load the provided Dictionary into stream and buffer
         File fin = new File("english.0");
@@ -47,25 +50,25 @@ class PreComputeHashes {
     	//Construct BufferedReader from InputStreamReader
     	BufferedReader br = new BufferedReader(new InputStreamReader(fis));
      
-    	//We parse the buffer to test matches for hashed password,
-    	//reversed passwords, non vowel passwords, and salted versions of password (if required). 
+    	//We parse the buffer to populate our hashes_dict (hashes for word , reversed_word 
     	String line = null;
     	while ((line = br.readLine()) != null) {
     		
-    	        //We test if the password matches an unmodified dictionary entry
+    	        //for line
     	        hashes_dict.put(stringToSha1(line),line);
     	        
-    	        //We test if the password matches a reversed dictionary entry
+    	        //for reversed line
     	        String reversed_line = new StringBuilder(line).reverse().toString();
     	        hashes_dict.put(stringToSha1(reversed_line),reversed_line);
     	        
-    	        //We test if the password matches a dictionary entry without its vowels
+    	        //for line without vowels
     	        String line_without_vowels = line.replaceAll("[AEIOUaeiou]", "");
     	        hashes_dict.put(stringToSha1(line_without_vowels),line_without_vowels);
     		}
     		
     	}
 
+	//not required since we don't execute main anyway
 	public static void main(String[] args) throws Exception{
 	
 		populate() ;
