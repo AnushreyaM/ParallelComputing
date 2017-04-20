@@ -11,6 +11,7 @@ int *a,*b,*c ;
 
 pthread_t thread_id[2];
 
+//function to return number of digits
 int num_of_dig(int n)
 {
 	int dig=0 ;
@@ -22,7 +23,8 @@ int num_of_dig(int n)
 	return dig ;
 }
 
-int makefour(int num) //make sure every cell has four digits
+//make sure every cell has four digits
+int makefour(int num) 
 {
 	int new=0 ;
 	int i= 0 ; 
@@ -35,7 +37,8 @@ int makefour(int num) //make sure every cell has four digits
 	return new ;
 }
 
-void* calc_fib(void* n) //function every thread runs
+//the function every thread runs
+void* calc_fib(void* n) 
 {
 	int *n1 = n ;
 	int num = *n1 ;
@@ -114,31 +117,28 @@ void main()
 	else
 	{
 		
-		
-		
+		pthread_create(&thread_id[0],NULL,calc_fib,&num1) ;
+		pthread_create(&thread_id[1],NULL,calc_fib,&num2) ;
+		pthread_create(&thread_id[2],NULL,calc_fib,&num3) ;
 			
-			pthread_create(&thread_id[0],NULL,calc_fib,&num1) ;
-			pthread_create(&thread_id[1],NULL,calc_fib,&num2) ;
-			pthread_create(&thread_id[2],NULL,calc_fib,&num3) ;
-			
-		    pthread_join(thread_id[0],&res_a);
-		    pthread_join(thread_id[1],&res_c);
-		    pthread_join(thread_id[2],&res_b);
+		pthread_join(thread_id[0],&res_a);
+		pthread_join(thread_id[1],&res_c);
+		pthread_join(thread_id[2],&res_b);
 		    
-		    res1_a=res_a;
-		    res1_b=res_b ;
-		    res1_c=res_c ;
+		res1_a=res_a;
+		res1_b=res_b ;
+		res1_c=res_c ;
 		   
-			//perform additions on results obtained from threads
+		//perform additions on results obtained from threads
 			
-			for(j=max-1 ; j>=0 ; j--)
+		for(j=max-1 ; j>=0 ; j--)
+		{
+			result[j]=res1_a[j]+res1_b[j]+carry ;
+			carry= 0;
+			if(result[j]%10000!=0)
 			{
-				result[j]=res1_a[j]+res1_b[j]+carry ;
-				carry= 0;
-				if(result[j]%10000!=0)
-				{
-					carry=result[j]/10000 ;
-					result[j]=makefour(result[j]) ;
+				carry=result[j]/10000 ;
+				result[j]=makefour(result[j]) ;
 					
 				}
 			}
@@ -174,8 +174,6 @@ void main()
 					printf("0") ;
 				printf("%d",result[j]) ;
 			} 
-	
-	
 	}
 
 }
